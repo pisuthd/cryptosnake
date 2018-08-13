@@ -259,7 +259,7 @@ function CArena(oData) {
     }, MS_FADE_TIME, createjs.Ease.cubicOut).call(function () {
       s_oGame.unpause(true);
       s_oGame.unload();
-      
+
       playExistingSound("soundtrack");
       setVolume("soundtrack", 1);
       s_oMain.gotoMenu();
@@ -491,30 +491,43 @@ function CArena(oData) {
     let totalParts = 0;
     let leftPos
     let rightPos
+
     for (let r of event) {
-      if (r.part == 'leftWrist') {
-        _oCursorLeftHand.x = r.position.x * 4
-        _oCursorLeftHand.y = r.position.y * 4
-        leftPos = {
-          x: r.position.x * 4,
-          y: r.position.y * 4
+      var posX = r.position.x * 3
+      var posY = r.position.y * 3
+      if (r.part == 'rightWrist') {
+        if (posX < CANVAS_WIDTH / 2) {
+         
+          _oCursorLeftHand.x = posX
+          _oCursorLeftHand.y = posY
+          leftPos = {
+            x: posX,
+            y: posY
+          }
+
+          totalParts += 1
         }
 
-        totalParts += 1
-      } else if (r.part == 'rightWrist') {
-
-        _oCursorRightHand.x = r.position.x * 4
-        _oCursorRightHand.y = r.position.y * 4
-        rightPos = {
-          x: r.position.x * 4,
-          y: r.position.y * 4
+      } else if (r.part == 'leftWrist') {
+        if (posX > CANVAS_WIDTH / 2) {
+          
+          _oCursorRightHand.x = posX
+          _oCursorRightHand.y = posY
+          rightPos = {
+            x: posX,
+            y: posY
+          }
+          totalParts += 1
         }
-        totalParts += 1
+
       }
     }
+    
 
     if (totalParts == 2) {
+
       angle = this.findAngle(leftPos.x, leftPos.y, rightPos.x, rightPos.y)
+      
     }
 
     return angle
@@ -525,11 +538,7 @@ function CArena(oData) {
 
     if (this.hasHand(event)) {
       let angle = this.getHandAngle(event)
-      if (angle > 0) {
-        angle -= 180;
-      } else if (angle < 0) {
-        angle += 180
-      }
+      
 
       if (angle != 0) {
         _oPlayerSnake.rotation(angle)

@@ -97,6 +97,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  removeModal() {
+    this.modalService.destroy()
+  }
+
 
 
 
