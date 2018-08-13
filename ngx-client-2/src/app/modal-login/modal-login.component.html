@@ -1,0 +1,16 @@
+<div class="container">
+
+  <label for="password">
+    <b>Login</b>
+  </label>
+  <input type="text" [(ngModel)]="password" name="password" placeholder="Enter Your Password" required> 
+
+  <p *ngIf="errorMessage" style="color:red">
+    {{ errorMessage}}
+  </p>
+
+  <div class="clearfix">
+    <button type="button" (click)="close()" class="cancelbtn">Cancel</button>
+    <button type="submit" (click)="login()" class="signupbtn">Login</button>
+  </div>
+</div>

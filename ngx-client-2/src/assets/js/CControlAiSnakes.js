@@ -115,8 +115,8 @@ function CControlAiSnakes() {
             }
         }
 
-        var aFoods = s_oManageFoods.getFoods();
-
+        //var aFoods = s_oManageFoods.getFoods();
+        var aFoods = s_oManageCoins.getFoods();
         //  console.log(oLinePos.getX() + " " + oSnake.getX());
         for (var i = 0; i < aFoods.length; i++) {
             if (aFoods[i].isVisible()) {

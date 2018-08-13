@@ -556,4 +556,4 @@ function CGame(oData) {
     this._init();
 }
 
-var s_oGame;
+//var s_oGame;

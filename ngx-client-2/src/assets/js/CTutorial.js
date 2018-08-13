@@ -42,10 +42,10 @@ function CTutorial(oData) {
     _oEdges = new CEdges(_oContainerEdges);
     _oSection = new CManageSections();
 
-    _oCoins = new CManageCoins(s_oScrollStage,'tutorial');
+    _oCoins = new CManageCoins(s_oScrollStage, 'tutorial');
 
 
-    
+
     _oCursorLeftHand = new createjs.Shape();
     _oCursorLeftHand.graphics.beginFill("red").drawCircle(0, 0, 5);
     _oCursorLeftHand.x = CANVAS_WIDTH / 3;
@@ -102,7 +102,7 @@ function CTutorial(oData) {
 
     s_oStage.addChild(_oMsgAccessWebcam);
 
-    
+
 
     _oWebcamController = new CWebcamController('tutorial');
 
@@ -193,7 +193,7 @@ function CTutorial(oData) {
   this.updateScoreFood = function () {
     //_iScore++;
     //_oInterface.refreshScore(_iScore);
-   // if (_iScore > _iBestScore) {
+    // if (_iScore > _iBestScore) {
     //  _iBestScore = _iScore;
     //  _oInterface.refreshBestScore(_iBestScore, true);
     //}
@@ -260,7 +260,7 @@ function CTutorial(oData) {
     if (_bStartGame) {
       _oPlayerSnake.update(_iPlayerSpeed);
       this.scrollStage(_oPlayerSnake, _iPlayerSpeed);
-      
+
       _oCoins.update();
 
       this.manageCollision();
@@ -334,21 +334,21 @@ function CTutorial(oData) {
     let rightPos
     for (let r of event) {
       if (r.part == 'leftWrist') {
-        _oCursorLeftHand.x = r.position.x * 3
-        _oCursorLeftHand.y = r.position.y * 3
+        _oCursorLeftHand.x = r.position.x * 4
+        _oCursorLeftHand.y = r.position.y * 4
         leftPos = {
-          x: r.position.x * 3,
-          y: r.position.y * 3
+          x: r.position.x * 4,
+          y: r.position.y * 4
         }
 
         totalParts += 1
       } else if (r.part == 'rightWrist') {
 
-        _oCursorRightHand.x = r.position.x * 3
-        _oCursorRightHand.y = r.position.y * 3
+        _oCursorRightHand.x = r.position.x * 4
+        _oCursorRightHand.y = r.position.y * 4
         rightPos = {
-          x: r.position.x * 3,
-          y: r.position.y * 3
+          x: r.position.x * 4,
+          y: r.position.y * 4
         }
         totalParts += 1
       }
@@ -446,7 +446,7 @@ function CTutorial(oData) {
     s_oStage.addChild(_oGroup)
   }
 
-  this._onButtonNext2Release = function() {
+  this._onButtonNext2Release = function () {
     s_oStage.removeChild(_oGroup);
     _oCoins.foodsInSections();
 
@@ -477,9 +477,43 @@ function CTutorial(oData) {
     oText3Back.y = 80
     _oGroup.addChild(oText3Back);
 
-    
+
+    var oSprite = s_oSpriteLibrary.getSprite('button_box');
+    var oButtonNext = new CTextButton(200, 200, oSprite, "Close", "Arial", "white", 32, _oGroup);
+    oButtonNext.setVisible(true);
+
+    oButtonNext.addEventListener(ON_MOUSE_UP, this._onButtonCloseRelease, this);
+
+
     s_oStage.addChild(_oGroup)
 
+  }
+
+
+  this.unpause = function (bVal) {
+    _bStartGame = bVal;
+    createjs.Ticker.paused = !bVal;
+  };
+
+  this._onButtonCloseRelease = function () {
+    _oFade.visible = true;
+    createjs.Tween.get(_oFade, {
+      ignoreGlobalPause: true
+    }).to({
+      alpha: 1
+    }, MS_FADE_TIME, createjs.Ease.cubicOut).call(function () {
+      s_oTutorial.unpause(true);
+      s_oTutorial.unload();
+
+      
+      
+      //console.dir(_oWebcamController.video)
+
+
+      playExistingSound("soundtrack");
+      setVolume("soundtrack", 1);
+      s_oMain.gotoMenu();
+    });
   }
 
   var _oGroup;
@@ -551,7 +585,12 @@ function CTutorial(oData) {
   }
   this.unload = function () {
     s_oStage.removeChild(_oGroup);
+    stopSound("soundtrack");
 
+    s_oWebcamController = null
+    s_oStage.removeAllChildren();
+    createjs.Tween.removeAllTweens();
+    s_oTutorial = null;
 
   }
 
@@ -586,7 +625,7 @@ function CWebcamController(access_type) {
   }
 
   this.unload = function () {
-
+    video.srcObject.stop()
     video = null;
     net = null;
 
@@ -602,8 +641,8 @@ function CWebcamController(access_type) {
     }
 
     const video = document.getElementById('video');
-    video.width = CANVAS_WIDTH / 3;
-    video.height = CANVAS_HEIGHT / 3;
+    video.width = CANVAS_WIDTH / 4;
+    video.height = CANVAS_HEIGHT / 4;
 
 
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -676,7 +715,7 @@ function CWebcamController(access_type) {
           let result = []
           for (let k of keypoints) {
 
-            if (k.part == 'leftWrist' || k.part == 'rightWrist' || k.part == 'leftEye' || k.part == 'rightEye') {
+            if (k.part == 'leftWrist' || k.part == 'rightWrist') {
               if (k.score >= singlePoseDetection.minPartConfidence) {
                 result.push(k);
               }
@@ -685,6 +724,8 @@ function CWebcamController(access_type) {
           if (result.length > 0) {
             if (access_type == 'tutorial') {
               s_oTutorial.onMove(result)
+            } else {
+              s_oGame.onMove(result)
             }
 
           }
@@ -711,18 +752,15 @@ function CWebcamController(access_type) {
     } catch (e) {
       message.status = 2
       message.cause = 'this browser does not support video capture,'
-      //let info = document.getElementById('info');
-      //info.textContent = 'this browser does not support video capture,' +
-      //    'or this device does not have a camera';
-      //info.style.display = 'block';
-      // throw e;
-      // }
+     
 
     }
-    message.cause = 'this browser does not support video capture'
+    
 
     if (access_type == 'tutorial') {
       s_oTutorial.showTutorialPanel(message);
+    } else {
+      s_oGame.startGame(message);
     }
 
   }
@@ -740,4 +778,4 @@ function CWebcamController(access_type) {
 }
 
 
-var s_oWebcamController = null;
+var s_oWebcamController

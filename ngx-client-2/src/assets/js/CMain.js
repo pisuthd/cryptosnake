@@ -206,7 +206,7 @@ function CMain(oData) {
   };
 
   this.gotoGame = function () {
-    _oGame = new CGame(_oData);
+    _oGame = new CArena(_oData);
 
     _iState = STATE_GAME;
   };
