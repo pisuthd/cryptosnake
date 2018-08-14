@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="text-center" *ngIf="!hasWallet">
+      <input type="text" [(ngModel)]="key" name="password" placeholder="Enter Your Key" required> 
+    <button type="button" (click)="importKey()" class="signupbtn">Import</button>
+  </div>
+  <div class="text-center" *ngIf="hasWallet">
+    <button type="button" (click)="export()" class="signupbtn">Export Key</button>
+  </div>
+  <div class="text-center" *ngIf="hasWallet">
+    <button type="button" (click)="signOff()" class="cancelbtn">Sign Off</button>
+  </div>
+  <div class="text-center">
+    <button type="button" (click)="close()" class="cancelbtn">Cancel</button>
+  </div>
+</div>

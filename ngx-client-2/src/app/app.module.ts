@@ -13,7 +13,8 @@ import { ModalTestComponent } from './modal-test/modal-test.component';
 import { ModalInitComponent } from './modal-init/modal-init.component';
 import { ModalSignUpComponent } from './modal-sign-up/modal-sign-up.component'
 import { WalletService } from '../shared/wallet.service';
-import { ModalLoginComponent } from './modal-login/modal-login.component'
+import { ModalLoginComponent } from './modal-login/modal-login.component';
+import { ModalOptionComponent } from './modal-option/modal-option.component'
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ModalLoginComponent } from './modal-login/modal-login.component'
     ModalTestComponent,
     ModalInitComponent,
     ModalSignUpComponent,
-    ModalLoginComponent
+    ModalLoginComponent,
+    ModalOptionComponent
   
   ],
   imports: [
@@ -41,7 +43,8 @@ import { ModalLoginComponent } from './modal-login/modal-login.component'
     ModalTestComponent,
     ModalInitComponent,
     ModalSignUpComponent,
-    ModalLoginComponent
+    ModalLoginComponent,
+    ModalOptionComponent
   ],
   bootstrap: [AppComponent]
 })

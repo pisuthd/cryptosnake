@@ -32,7 +32,7 @@ export class ModalSignUpComponent implements OnInit {
     this.onCreation = false
     this.modalService.destroy();
     let self:any = this
-    console.log(nep2Key)
+    
     self.callback(nep2Key)
   }
   

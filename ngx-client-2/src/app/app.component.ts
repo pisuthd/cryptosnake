@@ -9,12 +9,12 @@ import { ModalLoginComponent } from './modal-login/modal-login.component'
 
 import { OnlineService } from '../shared/online.service'
 
-import  {WalletService } from '../shared/wallet.service'
+import { ModalOptionComponent } from './modal-option/modal-option.component'
+
+import { WalletService } from '../shared/wallet.service'
 
 declare var CMain: any;
-declare var jquery: any;
-declare var createjs: any;
-declare var setting: any;
+
 
 
 
@@ -29,14 +29,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   constructor(
-    private walletService : WalletService,
+    private walletService: WalletService,
     private modalService: ModalService,
     private _ngZone: NgZone,
     private onlineService: OnlineService
   ) {
     window['angularComponentReference'] = {
       zone: this._ngZone,
-      componentFn: (key,value) => this.callFunction(key,value),
+      componentFn: (key, value) => this.callFunction(key, value),
       component: this,
     };
   }
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     )
     */
-  
+
     var oMain = new CMain({
       hero_rotation_speed: 10, //HERO ROTATION SPEED WHEN MOVING RIGHT/LEFT
       hero_speed_up: 15, //SET THIS MAX HERO SPEED WHEN PRESS UP KEY
@@ -69,7 +69,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       fullscreen: true, //SET THIS TO FALSE IF YOU DON'T WANT TO SHOW FULLSCREEN BUTTON
       check_orientation: true //SET TO FALSE IF YOU DON'T WANT TO SHOW ORIENTATION ALERT ON MOBILE DEVICES
     });
-   
+
     /*
      let inputs = {
        isMobile: false
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
      */
 
   }
-  
+
 
   ngOnDestroy() {
 
@@ -105,27 +105,34 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
 
-  public callFunction(key: any,callback: any): any {
-    //this.gameCallback = callback;
+  public callFunction(key: any, callback: any): any {
+    
 
     if (key == 'create_account') {
-      
+
       this.modalService.init(ModalSignUpComponent, {
-        callback : callback
+        callback: callback
       }, {});
     } else if (key == 'login') {
       this.modalService.init(ModalLoginComponent, {
-        callback : callback
+        callback: callback
       }, {});
     } else if (key == 'load_balance') {
       // use API
       //const balance = this.walletService.getBalance(this.walletService.wallet.address)
       //console.log(balance)
+    } else if (key == 'show_option') {
+      this.modalService.init(ModalOptionComponent, {
+        callback: callback
+      }, {});
+    } else if (key == 'end_game') {
+      let score = callback;
+      console.log('collect score : ',score)
     }
-    
-    
 
-   
+
+
+
   }
 }
 

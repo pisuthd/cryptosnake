@@ -222,6 +222,15 @@ function CMenu() {
 
     })
   }
+  this.onCallbackOption = (nep2key) => {
+    if (nep2key==null) {
+      localStorage.removeItem('nep2key')
+    } else {
+      localStorage.setItem('nep2key', nep2key);
+    }
+
+    this._showAuthButtons();
+  }
 
   this.onAccountCreated = (nep2key) => {
 
@@ -291,21 +300,13 @@ function CMenu() {
 
 
   this._onButtonOptionRelease = function () {
-    /*
-    _oFade.visible = true;
-
-    createjs.Tween.get(_oFade).to({
-      alpha: 1
-    }, MS_FADE_TIME, createjs.Ease.cubicOut).call(function () {
-       
-    });
-    */
 
     window.angularComponentReference.zone.run(() => {
-      window.angularComponentReference.componentFn("hello");
+      window.angularComponentReference.componentFn('show_option', this.onCallbackOption);
 
     })
   }
+
 
 
   this._onButtonTutorialRelease = function () {
