@@ -41,14 +41,37 @@ def Main(operation, args):
             return deploy()
         elif operation == 'circulation':
             return get_circulation(context)
+        elif operation == ''
 
         return 'unknown operation'
     return False
 
 
-def deploy():
+
+def create_challenge():
     """
     :param token: Token The token to deploy
+    :return:
+        bool: Whether the operation was successful
+    """
+    if not CheckWitness(address):
+        return False
+    Log('Creating a challenge contract')
+    Put(context, smart_lock_ip, address)
+
+    key = concat(smart_lock_ip,'/price')
+    Put(context, key, price)
+
+    key = concat(smart_lock_ip,'/owner')
+    Put(context, key, owner_name)
+
+    key = concat(smart_lock_ip,'/room')
+    Put(context, key, room_name)
+
+    return True
+
+def deploy():
+    """
     :return:
         bool: Whether the operation was successful
     """

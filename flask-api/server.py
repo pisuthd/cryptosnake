@@ -64,8 +64,14 @@ app.config['JWT_AUTH_HEADER_PREFIX'] = 'Bearer'
 app.secret_key = "cryptosnake-dev"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-PROTOCOL_CONFIG = os.path.join(current_dir, "../neo/data/protocol.privnet.json")
+PROTOCOL_CONFIG = os.path.join(current_dir, "../neo/data/protocol.testnet.json")
 
+
+snk = {
+    'address' : '',
+    'nep2' : '',
+    'nep2_pass' : ''
+}
 
 game_default = {
     "hero_rotation_speed": 10,
@@ -79,7 +85,7 @@ game_default = {
 
 class Home(flask_resource):
     def get(self):
-        return {'message': 'hello123'}
+        return {'status': 'ok'}
 
 
 #jwt = JWT(app, authenticate, identity)  # /auth
@@ -97,6 +103,27 @@ def defaultConfig():
     }
     return jsonify(response)
 
+
+# claim an reward 
+@app.route('/api/private/claimReward', methods=['POST'])
+def create_item():
+    """
+        Request Example :
+        {
+            address: 'ASgTEgv7VEeUGBhB3a9THw9Fai2hK4egpz'
+            score: 10
+        }
+    """
+    if not request.json or not 'address' or not 'score' in request.json:
+        abort(400)
+    body = request.json
+    player_address = body["address"]
+    amount = body["score"]
+    smart_contract.add_invoke("transfer", snk['address'], player_address, amount)
+    response = {
+        'status': 'ok'
+    }
+    return jsonify(response)
 
 
 @app.route("/api/public/chainInfo", methods=['GET'])
@@ -179,8 +206,8 @@ class smartContract(threading.Thread):
         
         assert self.wallet is None
         # hardcode owner key
-        NEP2 = '6PYM89yRYJVLiaJMvW5cTHDcKhuHmcZ4FXrkrQfFK79VdSj6cqeK1CZfNV'
-        passpharse = 'Ohm8288&eybok'
+        NEP2 = snk['nep2']
+        passpharse = snk['nep2_pass']
         prikey = KeyPair.PrivateKeyFromNEP2(NEP2, passpharse)
         logger.info("Create a new wallet...")
         self.wallet = UserWallet.Create(WalletFixtureTestCase.new_wallet_dest(), to_aes_key('awesomepassword'))
@@ -301,8 +328,8 @@ def main():
     flask_site = WSGIResource(reactor, reactor.getThreadPool(), app)
     reactor.listenTCP(8080, Site(flask_site))
 
-    smart_contract.start()
-    smart_contract.add_invoke('circulation')
+    #smart_contract.start()
+    #smart_contract.add_invoke('circulation')
     
     logger.info("Everything setup and running. Waiting for events...")
     reactor.run()
