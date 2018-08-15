@@ -45,7 +45,17 @@ def Main(operation, args):
         elif operation == 'circulation':
             return get_circulation(context)
         elif operation == 'create_bet_contract':
-
+            uid = args[0]
+            owner = args[1]
+            bounty = args[2]
+            snake = args[3]
+            speed = args[4]
+            return create_bet_contract(uid, owner,bounty,snake,speed)
+        elif operation == 'claim_challenge':
+            uid = args[0]
+            owner = args[1]
+            to = args[2]
+            return claim_challenge(uid, owner,to)
         return 'unknown operation'
     return False
 

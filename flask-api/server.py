@@ -104,9 +104,11 @@ def defaultConfig():
     return jsonify(response)
 
 
-# claim an reward 
+
+
+# claim a score 
 @app.route('/api/private/claimReward', methods=['POST'])
-def create_item():
+def cliam_reward():
     """
         Request Example :
         {
@@ -124,6 +126,65 @@ def create_item():
         'status': 'ok'
     }
     return jsonify(response)
+
+
+# not used
+# create a bet contract 
+@app.route('/api/private/bet', methods=['POST'])
+def create_bet():
+    """
+        Request Example :
+        {
+            uid: '1'
+            owner : 'xxxxxxx'
+            bounty: 10
+            snake : 3
+            speed : 2
+        }
+    """
+    if not request.json or not 'uid' or not 'owner' or not 'bounty' or not 'snake' or not 'speed' in request.json:
+        abort(400)
+    body = request.json
+    uid = body["uid"]
+    owner = body["owner"]
+    bounty = body["bounty"]
+    snake = body["snake"]
+    speed = body["speed"]
+    smart_contract.add_invoke("create_bet_contract", uid,owner,bounty,snake,speed)
+    response = {
+        'status': 'ok'
+    }
+    return jsonify(response)
+
+
+# not used
+# claim an challenge
+@app.route('/api/private/bet', methods=['POST'])
+def cliam_challenge():
+    """
+        Request Example :
+        {
+            uid: '1'
+            owner : 'xxxxxxx'
+            to: 'yyyyyy'
+        }
+    """
+    if not request.json or not 'uid' or not 'owner' or not 'bounty' or not 'snake' or not 'speed' in request.json:
+        abort(400)
+    body = request.json
+    uid = body["uid"]
+    owner = body["owner"]
+    bounty = body["bounty"]
+    snake = body["snake"]
+    speed = body["speed"]
+    smart_contract.add_invoke("create_bet_contract", uid,owner,bounty,snake,speed)
+    response = {
+        'status': 'ok'
+    }
+    return jsonify(response)
+
+
+
 
 
 @app.route("/api/public/chainInfo", methods=['GET'])
