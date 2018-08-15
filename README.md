@@ -9,7 +9,18 @@ CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped 
  
  ## How to play
  
+ please check here [http://neo.game/works_details_en.html#128](http://neo.game/works_details_en.html#128)
+ 
+ 
  ## Installation
  
+ For offline playing, go to ngx-client then
  
+```
+npm install
+```
+
+```
+npm start
+```
  
