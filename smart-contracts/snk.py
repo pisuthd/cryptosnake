@@ -7,7 +7,10 @@ from boa.interop.Neo.TriggerType import Application, Verification
 from boa.interop.Neo.Storage import Get, Put, GetContext, Delete
 
 context = GetContext()
-NEP5_METHODS = ['name', 'symbol', 'decimals', 'totalSupply', 'balanceOf', 'transfer', 'transferFrom', 'approve', 'allowance']
+NEP5_METHODS = ['name', 'symbol', 'decimals', 'totalSupply',
+                'balanceOf', 'transfer', 'transferFrom', 'approve', 'allowance']
+
+game_address = ''
 
 """
 #deploy NEP5-based SNK Token
@@ -41,34 +44,88 @@ def Main(operation, args):
             return deploy()
         elif operation == 'circulation':
             return get_circulation(context)
-        elif operation == ''
+        elif operation == 'create_bet_contract':
 
         return 'unknown operation'
     return False
 
 
-
-def create_challenge():
+def create_bet_contract(uid, owner, bounty, snake, speed):
     """
-    :param token: Token The token to deploy
+    :param uid: Unique Id for the contract
+    :param owner: Owner address
+    :param bounty: Bounty to be used
+    :param snake: Total snake to be deployed in the game
+    :param speed: Speed of the player in the game
     :return:
         bool: Whether the operation was successful
     """
-    if not CheckWitness(address):
+    if not CheckWitness(owner):
         return False
-    Log('Creating a challenge contract')
-    Put(context, smart_lock_ip, address)
+    Log('Make a bet contract')
+    if (bounty <= 0):
+        Notify("Bounty need to be > 0")
+        return False
+    from_balance = Get(context, address)
+    if from_balance < bounty:
+        print("Insufficient tokens for the contract")
+        return False
+    balance = from_balance - price
+    Put(context, address, balance)
+    Put(context, uid, owner)
+    key = concat(uid, '/bounty')
+    Put(context, key, bounty)
+    # set total snake in the game
+    key = concat(uid, '/snake')
+    Put(context, key, snake)
+    # set a player speed
+    key = concat(uid, '/speed')
+    Put(context, key, speed)
 
-    key = concat(smart_lock_ip,'/price')
-    Put(context, key, price)
-
-    key = concat(smart_lock_ip,'/owner')
-    Put(context, key, owner_name)
-
-    key = concat(smart_lock_ip,'/room')
-    Put(context, key, room_name)
+    Log("Done!")
 
     return True
+
+
+def claim_challenge(uid, owner,to):
+    """
+    :param uid: contract id
+    :param owner: owner need to release the deposit and get refund 20%
+    :param to: winner address
+    :return:
+        bool: Whether the operation was successful
+    """
+    if not CheckWitness(owner):
+        return False
+    Log('Releasing Deposit')
+    deposit = Get(context,concat(uid, '/bounty'))
+    
+    # refund back to the owner 20%
+    owner_balance = Get(context, owner)
+    # give winner 60%
+    to_balance = Get(context, to)
+    # game takes commission 20%
+    game_balance =  Get(context, game_address)
+
+    update_owner_balance = owner_balance+(deposit*0.2)
+
+    update_to_balance = to_balance+(deposit*0.6)
+
+    update_game_balance = game_address+(deposit*0.2)
+
+    Put(context,owner,update_owner_balance)
+    Put(context,to,update_to_balance)
+    Put(context,game_address,update_game_balance)
+
+    # clear contract data
+    Delete(context, concat(uid)
+    Delete(context, concat(uid, '/bounty'))
+    Delete(context, concat(uid, '/deposit'))
+    Delete(context, concat(uid, '/snake'))
+    Log('Deposit has been released!')
+    return True
+
+
 
 def deploy():
     """
@@ -86,9 +143,3 @@ def deploy():
         return add_to_circulation(context, TOKEN_INITIAL_AMOUNT)
 
     return False
-
-
-
-
-
-
