@@ -4,9 +4,9 @@
 
 CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped desktop can experience an innovative full-body tracking technology right from the browser and player can get an reward in NEO NEP-5 token when fruits have been eaten by the snake that they're controlled. In the long run, the token can be used for organizaing various challenges from player to player and create a bandwagon effect as the network become more valuable and more people join. 
 
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+![Menu Screen](https://s3.amazonaws.com/dev1.cryptosnake.webcam/snake1.png)
 
- [![video_link](https://drive.google.com/file/d/13YvOBSEzNzSxE6aZ3Evu9wHWf2hKwNB4/view?usp=sharing)](https://www.youtube.com/watch?v=_B9s7vPaZo0)
+ [![video_link](https://s3.amazonaws.com/dev1.cryptosnake.webcam/snake7.png)](https://www.youtube.com/watch?v=_B9s7vPaZo0)
 
  
  ## How it works
