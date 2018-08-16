@@ -2,7 +2,7 @@
 
 ## What is it
 
-CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped desktop can experience an innovative full-body tracking technology right from the browser and player can get an reward in NEO NEP-5 token when fruits have been eaten by the snake that they're controlled. In the long run, the token can be used for organizaing various challenges from player to player and create a bandwagon effect as the network become more valuable and more people join. \
+CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped desktop can experience an innovative full-body tracking technology right from the browser and player can get an reward in NEO NEP-5 token when fruits have been eaten by the snake that they're controlled. In the long run, the token can be used for organizaing various challenges from player to player and create a bandwagon effect as the network become more valuable and more people join. 
 
  [![hello](https://img.youtube.com/vi/_B9s7vPaZo0/0.jpg)](https://www.youtube.com/watch?v=_B9s7vPaZo0)
 
@@ -11,8 +11,7 @@ CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped 
  
  * NEO blockchain - The game utilizes of a new token name SNAKE COIN based in NEO NEP-5 where it can drop as a fruit in the game and much as player can eat, it will transform into a coin. And it will be primarily data store for the game where player can place an challenge for other player and set a bounty for them.  (betting part is not fully functional on testnet yet)
  
- * Tensorflow.js - The magic behinds the game is a pre-built machine-learning model name [Posenet](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5) which allows for real-time pose estimation in the browser by tensorflow javascript framework without the need of expensive sensors at all.
- 
+ * Tensorflow.js - The magic behinds the game is a pre-built machine-learning model name [Posenet](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5) which allows for real-time pose estimation in the browser by tensorflow javascript framework without the need of expensive sensors at all. The game detects player hands in a video and analyse the movement of the player to control a snake. The easiest way to control the snake is just act like to drive a car. 
  
  ## How to play
  
