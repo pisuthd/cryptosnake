@@ -38,7 +38,7 @@ npm install
 npm start
 ```
 
-Prior to the API server & smart contract deployment, you need to have a NEO privatenet in-place either docker or full-node please check on NEO office guide on private network deployment.
+Prior to the API server & smart contract deployment, you need to have a NEO privatenet in-place either docker or full-node please check on NEO official guide on private network deployment.
 
 Then you need to install python-sdk from [https://github.com/CityOfZion/neo-python](https://github.com/CityOfZion/neo-python) then navigate to your neo-python folder and run 
 
