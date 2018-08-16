@@ -51,7 +51,7 @@ cp (from the package) api/
 ```
 python3.6 server.py
 ```
-It is advise for the experiment only while the production should considering on nginx or apache.
+It is advising to runs the game for experiment only while the production should considering to use nginx or apache instead.
 
  ## Issues
  
