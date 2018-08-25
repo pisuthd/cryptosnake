@@ -57,8 +57,8 @@ function CEndPanel(oSpriteBg) {
   this.show = function (iScore) {
     playSound("game_over", 1, false);
 
-    _oMsgTextBack.text = "Collected";
-    _oMsgText.text = "Collected";
+    _oMsgTextBack.text = "Collect";
+    _oMsgText.text = "Collect";
 
     _oScoreTextBack.text = iScore + " Coin" 
     _oScoreText.text = iScore + " Coin" 
