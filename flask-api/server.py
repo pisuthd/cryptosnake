@@ -9,7 +9,10 @@ import sys
 import binascii
 import logging
 
+
+
 # load python flask 
+from functools import wraps
 from flask import Flask, request, jsonify, abort
 from flask_restful import Resource as flask_resource, Api as flask_api, reqparse
 from flask_jwt import JWT, jwt_required
@@ -34,6 +37,9 @@ from neo.Network.api.decorators import json_response, gen_authenticated_decorato
 from neo.contrib.smartcontract import SmartContract
 from neo.Settings import settings
 
+from neocore.Cryptography.Helper import *
+
+from neo.Core.State.StorageKey import StorageKey
 
 
 
@@ -61,16 +67,17 @@ app = Flask(__name__)
 
 api = flask_api(app)
 app.config['JWT_AUTH_HEADER_PREFIX'] = 'Bearer'
-app.secret_key = "cryptosnake-dev"
+app.secret_key = "cryptosnake-testnet-1234"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 PROTOCOL_CONFIG = os.path.join(current_dir, "../neo/data/protocol.testnet.json")
 
+# nep5 script hash -  2391290b28f12f92e81750efb3e3047be4381780
 
-snk = {
-    'address' : '',
-    'nep2' : '',
-    'nep2_pass' : ''
+SNK = {
+    'script_hash' : '0x2391290b28f12f92e81750efb3e3047be4381780',
+    'nep2' : '6PYVEcQPbVcW4NFrwN3Zr1FYyMdCtHRZQZKfmA42uYhNwLE9tsYrSqBzTX',
+    'nep2_pass' : 'Ohm8288&eybok'
 }
 
 game_default = {
@@ -87,50 +94,125 @@ class Home(flask_resource):
     def get(self):
         return {'status': 'ok'}
 
+# simple authorization module to prevent unauthorize access
+def require_appkey(view_function):
+    @wraps(view_function)
+    # the new, post-decoration function. Note *args and **kwargs here.
+    def decorated_function(*args, **kwargs):
+        if request.headers.get('x-api-key') and request.headers.get('x-api-key') == app.secret_key:
+            return view_function(*args, **kwargs)
+        else:
+            abort(401)
+    return decorated_function
 
-#jwt = JWT(app, authenticate, identity)  # /auth
-CORS(app, origins="*", allow_headers=["Content-Type", "Authorization",
-                                      "Access-Control-Allow-Credentials"], supports_credentials=True)
+
+
+#helper class
+class UInt160(UIntBase):
+    def __init__(self, data=None):
+        super(UInt160, self).__init__(num_bytes=20, data=data)
+
+    @staticmethod
+    def ParseString(value):
+        if value[0:2] == '0x':
+            value = value[2:]
+        if not len(value) == 40:
+            raise Exception("Invalid UInt160 Format: %s chars != 40 chars" % len(value))
+        reversed_data = bytearray.fromhex(value)
+        reversed_data.reverse()
+        return UInt160(data=reversed_data)
+
+CORS(app, origins="*", allow_headers=["Content-Type", "Authorization","x-api-key","Access-Control-Allow-Credentials"], supports_credentials=True)
 
 api.add_resource(Home, '/')
 
-@app.route("/api/public/defaultConfig", methods=['GET'])
+@app.route("/api/config", methods=['GET'])
+@require_appkey
 def defaultConfig():
     response = {
         'cfg' : game_default,
-        'server' : ['devnet'],
+        'server' : ['testnet'],
         'current_height': Blockchain.Default().Height
     }
     return jsonify(response)
 
 
 
-
-# claim a score 
-@app.route('/api/private/claimReward', methods=['POST'])
-def cliam_reward():
-    """
-        Request Example :
-        {
-            address: 'ASgTEgv7VEeUGBhB3a9THw9Fai2hK4egpz'
-            score: 10
-        }
-    """
-    if not request.json or not 'address' or not 'score' in request.json:
-        abort(400)
-    body = request.json
-    player_address = body["address"]
-    amount = body["score"]
-    smart_contract.add_invoke("transfer", snk['address'], player_address, amount)
+@app.route("/api/chain", methods=['GET'])
+@require_appkey
+def chainInfo():
     response = {
-        'status': 'ok'
+        'name': 'NEO.testnet',
+        'current_height': Blockchain.Default().Height,
+        'version': settings.VERSION_NAME,
+        'peer_count': len(NodeLeader.Instance().Peers)
     }
     return jsonify(response)
 
 
+# get user balance
+@app.route("/api/user/<pubkey>", methods=['GET'])
+@require_appkey
+def balance(pubkey):
+    try:
+        script_hash = UInt160.ParseString(SNK['script_hash'])
+        user_script_hash = pubkey_to_pubhash(pubkey.encode('utf-8'))
+        #key = binascii.unhexlify(user_script_hash.encode('utf-8'))
+        storage_key = StorageKey(script_hash=script_hash, key=user_script_hash)
+        storage_item = Blockchain.Default().GetStorageItem(storage_key)
+        if storage_item:
+            bal = int.from_bytes(storage_item.Value, byteorder="little")
+            response = {
+                'pubkey': pubkey,
+                'balance' : bal
+            }
+            return jsonify(response)
+        else:
+            response = {
+                'pubkey': pubkey,
+                'balance' : 0
+            }
+            return jsonify(response)
+    except Exception as e:
+            logger.exception(e)
+            abort(500)
+
+# claim a score 
+@app.route("/api/claim", methods=['POST'])
+@require_appkey
+def get_an_reward():
+    """
+        Request Example :
+        {
+            pubkey: '02e496e35362f7c625c6386d5adf7e0a61d9a001ca4885ebc26b23e67c1eabfc78'
+            score: 10
+        }
+    """
+    data = request.data
+    dataJson = json.loads(data)
+    if not dataJson or not 'pubkey' in dataJson or not 'score' in dataJson:
+        abort(400)
+    try:
+        player_pubkey = dataJson["pubkey"]
+        amount = dataJson["score"]*100000000
+         
+        user_script_hash = pubkey_to_pubhash(player_pubkey.encode('utf-8'))
+
+        coinbase_script_hash = pubkey_to_pubhash('02b232aca1442f95648314642768fb8359bcd2d2bb21f81a789e3ad023e8ec7573'.encode('utf-8'))
+
+        smart_contract.add_invoke("transfer", coinbase_script_hash, user_script_hash, amount)
+        response = {
+            'status': 'ok'
+        }
+        return jsonify(response)
+    except Exception as e:
+            logger.exception(e)
+            abort(500)
+
+
 # not used
 # create a bet contract 
-@app.route('/api/private/bet', methods=['POST'])
+@app.route('/api/bet', methods=['POST'])
 def create_bet():
     """
         Request Example :
@@ -159,7 +241,7 @@ def create_bet():
 
 # not used
 # claim an challenge
-@app.route('/api/private/bet', methods=['POST'])
+@app.route('/api/bet', methods=['POST'])
 def cliam_challenge():
     """
         Request Example :
@@ -187,23 +269,10 @@ def cliam_challenge():
 
 
 
-@app.route("/api/public/chainInfo", methods=['GET'])
-def chainInfo():
-    response = {
-        'name': 'NEO.privnet',
-        'current_height': Blockchain.Default().Height,
-        'version': settings.VERSION_NAME,
-        'peer_count': len(NodeLeader.Instance().Peers)
-    }
-    return jsonify(response)
-
 
 class smartContract(threading.Thread):
     smart_contract = None
     contract_hash = None
-
-    wallet_path = None
-    wallet_pass = None
 
     tx_in_progress = None
 
@@ -211,13 +280,12 @@ class smartContract(threading.Thread):
     wallet = None
     _walletdb_loop = None
 
-    def __init__(self, contract_hash, wallet_path, wallet_pass):
+    def __init__(self, contract_hash):
         super(smartContract, self).__init__()
         self.daemon = True
 
         self.contract_hash = contract_hash
-        self.wallet_path = wallet_path
-        self.wallet_pass = wallet_pass
+
 
         self.smart_contract = SmartContract(contract_hash)
         self.invoke_queue = Queue()
@@ -266,13 +334,13 @@ class smartContract(threading.Thread):
         """ Open a wallet. Needed for invoking contract methods. """
         
         assert self.wallet is None
-        # hardcode owner key
-        NEP2 = snk['nep2']
-        passpharse = snk['nep2_pass']
+        NEP2 = SNK['nep2']
+        passpharse = SNK['nep2_pass']
         prikey = KeyPair.PrivateKeyFromNEP2(NEP2, passpharse)
-        logger.info("Create a new wallet...")
+        logger.info("Create an relay wallet...")
         self.wallet = UserWallet.Create(WalletFixtureTestCase.new_wallet_dest(), to_aes_key('awesomepassword'))
         keypair = self.wallet.CreateKey(prikey)
+
         self._walletdb_loop = task.LoopingCall(self.wallet.ProcessBlocks)
         self._walletdb_loop.start(1)
 
@@ -308,7 +376,6 @@ class smartContract(threading.Thread):
 
     def invoke_method(self, method_name, *args):
         """ invoke a method of the smart contract """
-        # TODO 2: later could bundle multiple invokes into a single tx
         logger.info("invoke_method: method_name=%s, args=%s", method_name, args)
         logger.info("Block %s / %s" % (str(Blockchain.Default().Height), str(Blockchain.Default().HeaderHeight)))
 
@@ -366,7 +433,7 @@ class smartContract(threading.Thread):
         else:
             raise Exception("InvokeContract failed")
 
-smart_contract = smartContract('e465ca59ed24e0108233f336bf9f2b0156242ee3', '', '')
+smart_contract = smartContract(SNK['script_hash'])
 
 
 def main():
@@ -389,7 +456,7 @@ def main():
     flask_site = WSGIResource(reactor, reactor.getThreadPool(), app)
     reactor.listenTCP(8080, Site(flask_site))
 
-    #smart_contract.start()
+    smart_contract.start()
     #smart_contract.add_invoke('circulation')
     
     logger.info("Everything setup and running. Waiting for events...")

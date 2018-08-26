@@ -27,10 +27,10 @@ export class ModalLoginComponent implements OnInit {
       alert('Password must have at least 8 characters')
       return
     }
-    console.log(localStorage.getItem('nep2key'))
+
     try {
       const decryptedKey = this.walletService.decrypt(this.password);
-      console.log('decryptedKey : ', decryptedKey)
+  
 
       try {
         const wallet = this.walletService.getWallet(decryptedKey)

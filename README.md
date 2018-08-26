@@ -11,7 +11,7 @@ CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped 
  
  ## How it works
  
- * NEO blockchain - The game utilizes of a new token name SNAKE COIN based in NEO NEP-5 where it can drop as a fruit form in the game. And it will be primarily data store for the game where player can place an challenge for other player and set a bounty for them.  (betting part is not fully functional due to testnet server is not yet in sync)
+ * NEO blockchain - The game utilizes of a new token name SNAKE COIN based in NEO NEP-5 where it can drop as a fruit form in the game. And it will be primarily data store for the game where player can place an challenge for other player and set a bounty for them. 
  
  * Tensorflow.js - The magic behinds the game is a pre-built machine-learning model name [Posenet](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5) which allows for real-time pose estimation in the browser by tensorflow javascript framework without the need of expensive sensors at all. The game detects player hands in a video and analyse the movement of the player to control a snake. The easiest way to control the snake is just act like to drive a car. For anyone interesting on this check out the sourcecode on ngx-client/app/src/assets/js/CTutorial.js
  

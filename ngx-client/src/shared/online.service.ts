@@ -10,22 +10,39 @@ import { environment } from "../environments/environment"
 @Injectable()
 export class OnlineService {
 
-    url : string 
+    url: string
 
     constructor(
         private http: Http
 
     ) {
-        this.url  = environment.public_api_endpoint
+        this.url = environment.public_api_endpoint
     }
 
-    getDefaultConfig(): Observable<any> {
-        return this.http.get(this.url+'/api/public/defaultConfig')
+    getBalance(pubkey: string): Observable<any> {
+        let headers = new Headers();
+        headers.append('x-api-key', environment.api_key);
+        let options = new RequestOptions({ headers: headers });
+        return this.http.get(this.url + '/api/user/'+pubkey, options)
             .map((res: Response) => res.json())
             .catch(
-            (error: Response) => {
-                return Observable.throw(error);
-            }
+                (error: Response) => {
+                    return Observable.throw(error);
+                }
+            )
+    }
+
+
+    getDefaultConfig(): Observable<any> {
+        let headers = new Headers();
+        headers.append('x-api-key', environment.api_key);
+        let options = new RequestOptions({ headers: headers });
+        return this.http.get(this.url + '/api/config', options)
+            .map((res: Response) => res.json())
+            .catch(
+                (error: Response) => {
+                    return Observable.throw(error);
+                }
             )
     }
 }

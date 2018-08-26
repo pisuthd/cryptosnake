@@ -126,6 +126,8 @@ function CMenu() {
 
   var _oBottomText
 
+  var _oBalanceText
+
   this._showAuthButtons = function () {
     if (_oButtonLogin) {
       _oButtonLogin.setVisible(false)
@@ -140,6 +142,8 @@ function CMenu() {
 
       _oContainerMenuGUI.removeChild(_oBottomText);
     }
+
+
 
 
 
@@ -180,8 +184,14 @@ function CMenu() {
 
     })
   }
-  this.onUpdateBalance = function (balance) {
-    console.log('balance : ', balance)
+  this.onUpdateBalance =  (balance)=> {
+    //console.log('balance : ', balance)
+    const bal = balance.balance/100000000
+    _oBalanceText = new createjs.Text("Your Balance : "+bal+" SNK", "32px " + FONT_GAME, "white");
+    _oBalanceText.textAlign = "left";
+    _oBalanceText.x = CANVAS_WIDTH / 2 - 600
+    _oBalanceText.y = (CANVAS_HEIGHT / 2) + 280
+    _oContainerMenuGUI.addChild(_oBalanceText)
   }
 
   this._hasNEP2Key = function () {
@@ -223,7 +233,7 @@ function CMenu() {
     })
   }
   this.onCallbackOption = (nep2key) => {
-    if (nep2key==null) {
+    if (nep2key == null) {
       localStorage.removeItem('nep2key')
     } else {
       localStorage.setItem('nep2key', nep2key);

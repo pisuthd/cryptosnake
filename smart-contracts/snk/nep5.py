@@ -1,11 +1,10 @@
-
 from boa.interop.Neo.Runtime import CheckWitness, Notify
 from boa.interop.Neo.Action import RegisterAction
 from boa.interop.Neo.Storage import *
 from boa.builtins import concat
 
+from snk.token import *
 
-TOKEN_CIRC_KEY = b'in_circulation'
 
 OnTransfer = RegisterAction('transfer', 'addr_from', 'addr_to', 'amount')
 OnApprove = RegisterAction('approve', 'addr_from', 'addr_to', 'amount')
@@ -58,15 +57,15 @@ def do_transfer(ctx, t_from, t_to, amount):
 
     if CheckWitness(t_from):
 
-        if t_from == t_to:
-            print("transfer to self!")
-            return True
-
         from_val = Get(ctx, t_from)
 
         if from_val < amount:
             print("insufficient funds")
             return False
+
+        if t_from == t_to:
+            print("transfer to self!")
+            return True
 
         if from_val == amount:
             Delete(ctx, t_from)
@@ -138,6 +137,9 @@ def do_transfer_from(ctx, t_from, t_to, amount):
 
 
 def do_approve(ctx, t_owner, t_spender, amount):
+
+    if len(t_spender) != 20:
+        return False
 
     if not CheckWitness(t_owner):
         return False

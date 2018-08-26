@@ -1,10 +1,10 @@
 """
-Settings for QPS Token
+Settings for SNK Token
 """
 
 from boa.interop.Neo.Storage import *
 
-TOKEN_NAME = 'Fruit'
+TOKEN_NAME = 'Snake'
 
 TOKEN_SYMBOL = 'SNK'
 
@@ -13,7 +13,9 @@ TOKEN_DECIMALS = 8
 
 
 # This is the script hash of the address for the owner of the token
-TOKEN_OWNER = b'\x03\x1a\x6c\x6f\xbb\xdf\x02\xca\x35\x17\x45\xfa\x86\xb9\xba\x5a\x94\x52\xd7\x85\xac\x4f\x7f\xc2\xb7\x54\x8c\xa2\xa4\x6c\x4f\xcf\x4a'
+# address : AHjQprtLMWe1ngUH5kvqLsCiadmUJwHqb5 , hash : 157907c32027ab409577803012f2db29a7fc55e9 , pubkey : 02b232aca1442f95648314642768fb8359bcd2d2bb21f81a789e3ad023e8ec7573
+TOKEN_OWNER = b'\x15\x79\x07\xc3\x20\x27\xab\x40\x95\x77\x80\x30\x12\xf2\xdb\x29\xa7\xfc\x55\xe9'
+
 
 TOKEN_CIRC_KEY = b'in_circulation'
 
@@ -21,7 +23,7 @@ TOKEN_TOTAL_SUPPLY = 100000000 * 100000000  # 100m of Total Supply eg. 1B. SNK T
 
 TOKEN_INITIAL_AMOUNT = 100000000 * 100000000  # then contribute to the owner 100%
 
-# we're accepting GAS in 1 usd per 1 qps
+# we're accepting GAS in 1 usd per 1 snk
 TOKENS_PER_GAS = 20 * 100000000
 
 

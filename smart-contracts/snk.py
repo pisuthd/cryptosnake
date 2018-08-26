@@ -7,21 +7,22 @@ from boa.interop.Neo.TriggerType import Application, Verification
 from boa.interop.Neo.Storage import Get, Put, GetContext, Delete
 
 context = GetContext()
-NEP5_METHODS = ['name', 'symbol', 'decimals', 'totalSupply',
-                'balanceOf', 'transfer', 'transferFrom', 'approve', 'allowance']
+NEP5_METHODS = ['name', 'symbol', 'decimals', 'totalSupply', 'balanceOf', 'transfer', 'transferFrom', 'approve', 'allowance']
 
-game_address = ''
+# testnet script hash : 0x2391290b28f12f92e81750efb3e3047be4381780 , address: ATT9xZYSrv54YidPcuXqk4cBkLBwmSrzE8
+
+game_address = '2391290b28f12f92e81750efb3e3047be4381780'
 
 """
 #deploy NEP5-based SNK Token
 #don't forget to change TOKEN_OWNER in snk/token.py with token's owner hash key
-testinvoke 3f50d55c3a4e31288bc200ca6663701744996908 deploy []
+testinvoke 2391290b28f12f92e81750efb3e3047be4381780 deploy []
 
 #inspect circulation
-testinvoke 3f50d55c3a4e31288bc200ca6663701744996908 circulation []
+testinvoke 2391290b28f12f92e81750efb3e3047be4381780 circulation []
 
 #import token into neo-python
-import token 3f50d55c3a4e31288bc200ca6663701744996908
+import token 2391290b28f12f92e81750efb3e3047be4381780
 
 """
 
@@ -59,7 +60,7 @@ def Main(operation, args):
         return 'unknown operation'
     return False
 
-
+# not used
 def create_bet_contract(uid, owner, bounty, snake, speed):
     """
     :param uid: Unique Id for the contract
@@ -76,12 +77,12 @@ def create_bet_contract(uid, owner, bounty, snake, speed):
     if (bounty <= 0):
         Notify("Bounty need to be > 0")
         return False
-    from_balance = Get(context, address)
+    from_balance = Get(context, owner)
     if from_balance < bounty:
         print("Insufficient tokens for the contract")
         return False
-    balance = from_balance - price
-    Put(context, address, balance)
+    balance = from_balance - bounty
+    Put(context, owner, balance)
     Put(context, uid, owner)
     key = concat(uid, '/bounty')
     Put(context, key, bounty)
@@ -96,7 +97,7 @@ def create_bet_contract(uid, owner, bounty, snake, speed):
 
     return True
 
-
+# not used
 def claim_challenge(uid, owner,to):
     """
     :param uid: contract id
@@ -115,23 +116,25 @@ def claim_challenge(uid, owner,to):
     # give winner 60%
     to_balance = Get(context, to)
     # game takes commission 20%
-    game_balance =  Get(context, game_address)
+    
+    #game_balance =  Get(context, game_address)
 
-    update_owner_balance = owner_balance+(deposit*0.2)
+    #update_owner_balance = owner_balance+(deposit*0.2)
 
-    update_to_balance = to_balance+(deposit*0.6)
+    #update_to_balance = to_balance+(deposit*0.6)
 
-    update_game_balance = game_address+(deposit*0.2)
+    #update_game_balance = game_address+(deposit*0.2)
 
-    Put(context,owner,update_owner_balance)
-    Put(context,to,update_to_balance)
-    Put(context,game_address,update_game_balance)
+    #Put(context,owner,update_owner_balance)
+    #Put(context,to,update_to_balance)
+    #Put(context,game_address,update_game_balance)
+    
 
     # clear contract data
-    Delete(context, concat(uid)
-    Delete(context, concat(uid, '/bounty'))
-    Delete(context, concat(uid, '/deposit'))
-    Delete(context, concat(uid, '/snake'))
+    #Delete(context, concat(uid))
+    #Delete(context, concat(uid, '/bounty'))
+    #Delete(context, concat(uid, '/deposit'))
+    #Delete(context, concat(uid, '/snake'))
     Log('Deposit has been released!')
     return True
 
