@@ -19,7 +19,7 @@ CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped 
  
  please check here [http://neo.game/works_details_en.html#128](http://neo.game/works_details_en.html#128)
  
- and go to testnet.cyptosnake.webcam for the early version of this game.
+ Or go to testnet.cyptosnake.webcam for the early version of this game (please make sure that you have enable load unsafe script at your browser due to the backend API is not yet setup SSL).
  
  
  ## Installation
