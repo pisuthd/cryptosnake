@@ -79,28 +79,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     )
 
-
-
-    /*
-     let inputs = {
-       isMobile: false
-     }
-     
-     this.modalService.init(ModalTestComponent, inputs, {});
- 
-     setTimeout(() => {
-       var oMain = new CMain({
-         hero_rotation_speed: 10, //HERO ROTATION SPEED WHEN MOVING RIGHT/LEFT
-         hero_speed_up: 15, //SET THIS MAX HERO SPEED WHEN PRESS UP KEY
-         hero_speed: 10, //MAX HERO SPEED
-         snakes_AI_speed: [10, 10, 10, 10],
-         food_score: [1], //ADD SCORE WHEN SNAKE EAT A FOOD BY TYPE  
-         fullscreen: true, //SET THIS TO FALSE IF YOU DON'T WANT TO SHOW FULLSCREEN BUTTON
-         check_orientation: true //SET TO FALSE IF YOU DON'T WANT TO SHOW ORIENTATION ALERT ON MOBILE DEVICES
-       });
-     }, 3000)
-     */
-
   }
 
 
@@ -132,8 +110,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       // use API
       //const balance = this.walletService.getBalance(this.walletService.wallet.address)
       //console.log(balance) '02b232aca1442f95648314642768fb8359bcd2d2bb21f81a789e3ad023e8ec7573'
-      console.log('load balance')
- 
+
       this.onlineService.getBalance(this.walletService.wallet.publicKey)
         .subscribe(
           balance => {
@@ -151,7 +128,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }, {});
     } else if (key == 'end_game') {
       let score = callback;
-      console.log('collect score : ', score)
+      this.onlineService.claim(this.walletService.wallet.publicKey,score)
+        .subscribe(
+          result=>{
+            alert('Submitted '+score+" SNK to your wallet.")
+          }
+        )
     }
 
 

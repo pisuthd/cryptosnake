@@ -76,9 +76,10 @@ PROTOCOL_CONFIG = os.path.join(current_dir, "../neo/data/protocol.testnet.json")
 
 SNK = {
     'script_hash' : '0x2391290b28f12f92e81750efb3e3047be4381780',
-    'nep2' : '6PYVEcQPbVcW4NFrwN3Zr1FYyMdCtHRZQZKfmA42uYhNwLE9tsYrSqBzTX',
-    'nep2_pass' : 'Ohm8288&eybok'
+    #'nep2' : '6PYVEcQPbVcW4NFrwN3Zr1FYyMdCtHRZQZKfmA42uYhNwLE9tsYrSqBzTX',
+    #'nep2_pass' : 'Ohm8288&eybok'
 }
+
 
 game_default = {
     "hero_rotation_speed": 10,
@@ -334,13 +335,14 @@ class smartContract(threading.Thread):
         """ Open a wallet. Needed for invoking contract methods. """
         
         assert self.wallet is None
-        NEP2 = SNK['nep2']
-        passpharse = SNK['nep2_pass']
-        prikey = KeyPair.PrivateKeyFromNEP2(NEP2, passpharse)
-        logger.info("Create an relay wallet...")
-        self.wallet = UserWallet.Create(WalletFixtureTestCase.new_wallet_dest(), to_aes_key('awesomepassword'))
-        keypair = self.wallet.CreateKey(prikey)
-
+        #NEP2 = SNK['nep2']
+        #passpharse = SNK['nep2_pass']
+        #prikey = KeyPair.PrivateKeyFromNEP2(NEP2, passpharse)
+        #logger.info("Create an relay wallet...")
+        #self.wallet = UserWallet.Create(WalletFixtureTestCase.new_wallet_dest(), to_aes_key('awesomepassword'))
+        #keypair = self.wallet.CreateKey(prikey)
+        # todo: won't use hard code
+        self.wallet = UserWallet.Open('../cryptosnake', to_aes_key('Ohm8288&eybok'))
         self._walletdb_loop = task.LoopingCall(self.wallet.ProcessBlocks)
         self._walletdb_loop.start(1)
 

@@ -32,6 +32,23 @@ export class OnlineService {
             )
     }
 
+    claim(pubkey: string,amount:number): Observable<any> {
+        let headers = new Headers();
+        headers.append('x-api-key', environment.api_key);
+        let options = new RequestOptions({ headers: headers });
+        let data = {
+            pubkey : pubkey,
+            score: amount
+        }
+        return this.http.post(this.url + '/api/claim',data, options)
+            .map((res: Response) => res.json())
+            .catch(
+                (error: Response) => {
+                    return Observable.throw(error);
+                }
+            )
+    }
+
 
     getDefaultConfig(): Observable<any> {
         let headers = new Headers();
