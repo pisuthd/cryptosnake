@@ -6,8 +6,6 @@ CryptoSnake is a kinect-styled snake game, anyone with a decent webcam-equipped 
 
 ![Menu Screen](https://s3.amazonaws.com/dev1.cryptosnake.webcam/snake1.png)
 
- [![video_link](https://s3.amazonaws.com/dev1.cryptosnake.webcam/snake7.png)](https://www.youtube.com/watch?v=_B9s7vPaZo0)
-
  
  ## How it works
  
