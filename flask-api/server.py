@@ -76,8 +76,6 @@ PROTOCOL_CONFIG = os.path.join(current_dir, "../neo/data/protocol.testnet.json")
 
 SNK = {
     'script_hash' : '0x2391290b28f12f92e81750efb3e3047be4381780',
-    #'nep2' : '6PYVEcQPbVcW4NFrwN3Zr1FYyMdCtHRZQZKfmA42uYhNwLE9tsYrSqBzTX',
-    #'nep2_pass' : 'Ohm8288&eybok'
 }
 
 
